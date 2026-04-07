@@ -22,6 +22,7 @@ services:
   # Serves OpenAI-compatible API on port 8080
   # ============================================
   llama-server:
+    image: ollama/ollama:latest  # Will be overridden by GPU overlay
     container_name: dream-llama-server
     restart: unless-stopped
     volumes:
