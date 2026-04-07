@@ -1,0 +1,18 @@
+[build]
+  base = "dream-server/extensions/services/dashboard"
+  command = "npm install && npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+# Configure bundle-env plugin (installed via UI) with explicit directories
+# to prevent "No source directory is specified" error
+[[plugins]]
+  package = "netlify-plugin-bundle-env"
+  [plugins.inputs]
+    directories = ["netlify/functions"]
+
+# SPA routing: serve index.html for all paths
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

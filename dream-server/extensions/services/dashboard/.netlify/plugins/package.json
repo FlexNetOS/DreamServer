@@ -1,0 +1,15 @@
+{
+  "name": "netlify-local-plugins",
+  "description": "This directory contains Build plugins that have been automatically installed by Netlify.",
+  "version": "1.0.0",
+  "private": true,
+  "author": "Netlify",
+  "license": "MIT",
+  "dependencies": {
+    "@helloample/netlify-plugin-replace": "1.1.4",
+    "@netlify/plugin-lighthouse": "6.0.1",
+    "@snaplet/netlify-preview-database-plugin": "2.0.0",
+    "netlify-plugin-bundle-env": "0.2.2",
+    "netlify-plugin-debug-cache": "1.0.4"
+  }
+}
