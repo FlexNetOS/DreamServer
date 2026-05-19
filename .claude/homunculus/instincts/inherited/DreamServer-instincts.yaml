@@ -1,0 +1,627 @@
+# Instincts generated from https://github.com/FlexNetOS/DreamServer
+# Generated: 2026-05-19T10:12:13.582Z
+# Version: 2.0
+# NOTE: This file supplements (does not replace) any existing curated instincts.
+# High-confidence manually curated instincts should be preserved alongside these.
+
+---
+id: DreamServer-commit-length
+trigger: "when writing a commit message"
+confidence: 0.6
+domain: git
+source: repo-analysis
+source_repo: https://github.com/FlexNetOS/DreamServer
+---
+
+# DreamServer Commit Length
+
+## Action
+
+Write moderate-length commit messages (~65 characters)
+
+## Evidence
+
+- Average commit message length: 65 chars
+- Based on 100 commits
+
+---
+id: DreamServer-naming-files
+trigger: "when creating a new file"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/FlexNetOS/DreamServer
+---
+
+# DreamServer Naming Files
+
+## Action
+
+Use camelCase naming convention
+
+## Evidence
+
+- Analyzed file naming patterns in repository
+- Dominant pattern: camelCase
+
+---
+id: DreamServer-import-relative
+trigger: "when importing modules"
+confidence: 0.75
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/FlexNetOS/DreamServer
+---
+
+# DreamServer Import Relative
+
+## Action
+
+Use relative imports for project files
+
+## Evidence
+
+- Import analysis shows relative import pattern
+- Example: import { x } from '../lib/x'
+
+---
+id: DreamServer-export-style
+trigger: "when exporting from a module"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/FlexNetOS/DreamServer
+---
+
+# DreamServer Export Style
+
+## Action
+
+Prefer named exports
+
+## Evidence
+
+- Export pattern analysis
+- Dominant style: named
+
+---
+id: DreamServer-test-naming
+trigger: "when creating a test file"
+confidence: 0.85
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/FlexNetOS/DreamServer
+---
+
+# DreamServer Test Naming
+
+## Action
+
+Name test files using the pattern: *.test.ts
+
+## Evidence
+
+- File pattern: *.test.ts
+- Consistent across test files
+
+---
+id: DreamServer-workflow-feature-development
+trigger: "when implementing a new feature"
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/FlexNetOS/DreamServer
+---
+
+# DreamServer Workflow Feature Development
+
+## Action
+
+Follow the feature-development workflow:
+1. Add feature implementation
+2. Add tests for feature
+3. Update documentation
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~11x per month
+- Files: **/*.test.*, **/api/**
+
+---
+id: DreamServer-workflow-update-extension-manifest-defaults
+trigger: "when doing update extension manifest defaults"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/FlexNetOS/DreamServer
+---
+
+# DreamServer Workflow Update Extension Manifest Defaults
+
+## Action
+
+Follow the update-extension-manifest-defaults workflow:
+1. Edit one or more manifest.yaml files under resources/dev/extensions-library/services/*/ or dream-server/extensions/services/*/
+2. Set or update default values for env_vars or gpu_backends fields.
+3. Optionally, update related documentation or compose files.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: resources/dev/extensions-library/services/*/manifest.yaml, dream-server/extensions/services/*/manifest.yaml
+
+---
+id: DreamServer-workflow-add-or-fix-dashboard-api-endpoint
+trigger: "when doing add or fix dashboard api endpoint"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/FlexNetOS/DreamServer
+---
+
+# DreamServer Workflow Add Or Fix Dashboard Api Endpoint
+
+## Action
+
+Follow the add-or-fix-dashboard-api-endpoint workflow:
+1. Edit or add routers/*.py in dashboard-api to implement/fix endpoint.
+2. Update or add corresponding tests in tests/*.py.
+3. Edit dashboard/src/pages/*.jsx to update UI as needed.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: dream-server/extensions/services/dashboard-api/routers/*.py, dream-server/extensions/services/dashboard-api/tests/*.py, dream-server/extensions/services/dashboard/src/pages/*.jsx
+
+---
+id: DreamServer-workflow-add-or-update-cli-command
+trigger: "when doing add or update cli command"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/FlexNetOS/DreamServer
+---
+
+# DreamServer Workflow Add Or Update Cli Command
+
+## Action
+
+Follow the add-or-update-cli-command workflow:
+1. Edit dream-server/dream-cli to add or modify command logic.
+2. Optionally, update related scripts or documentation.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: dream-server/dream-cli
+
+---
+id: DreamServer-workflow-add-or-improve-tests-for-dashboard-api
+trigger: "when doing add or improve tests for dashboard api"
+confidence: 0.65
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/FlexNetOS/DreamServer
+---
+
+# DreamServer Workflow Add Or Improve Tests For Dashboard Api
+
+## Action
+
+Follow the add-or-improve-tests-for-dashboard-api workflow:
+1. Create or update test_*.py files in dashboard-api/tests.
+2. Add tests for new endpoints, helpers, or edge cases.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~3x per month
+- Files: dream-server/extensions/services/dashboard-api/tests/*.py
+
+---
+id: DreamServer-workflow-fix-or-enhance-extension-compose-config
+trigger: "when doing fix or enhance extension compose config"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/FlexNetOS/DreamServer
+---
+
+# DreamServer Workflow Fix Or Enhance Extension Compose Config
+
+## Action
+
+Follow the fix-or-enhance-extension-compose-config workflow:
+1. Edit compose.yaml in the relevant extension's directory.
+2. Optionally, update related entrypoint scripts or config files.
+3. Test container startup and runtime behavior.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: dream-server/extensions/services/*/compose.yaml
+
+---
+id: DreamServer-workflow-update-github-actions-dependency-version
+trigger: "when doing update github actions dependency version"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/FlexNetOS/DreamServer
+---
+
+# DreamServer Workflow Update Github Actions Dependency Version
+
+## Action
+
+Follow the update-github-actions-dependency-version workflow:
+1. Edit one or more .github/workflows/*.yml files to update the action version.
+2. Commit with build(deps): bump ... message.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: .github/workflows/*.yml
+
+---
+id: DreamServer-workflow-platform-compatibility-script-fix
+trigger: "when doing platform compatibility script fix"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/FlexNetOS/DreamServer
+---
+
+# DreamServer Workflow Platform Compatibility Script Fix
+
+## Action
+
+Follow the platform-compatibility-script-fix workflow:
+1. Edit relevant shell scripts to replace incompatible commands or add platform-specific logic.
+2. Test on affected platforms.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: dream-server/scripts/*.sh, dream-server/installers/phases/*.sh, dream-server/installers/lib/*.sh
+
+---
+id: dreamserver-camelcase-files
+trigger: "When creating or renaming a file in the codebase."
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: FlexNetOS/DreamServer
+---
+
+# Dreamserver Camelcase Files
+
+## Action
+
+Name the file using camelCase.
+
+## Evidence
+
+- Pattern in namingConventions.files: camelCase
+
+---
+id: dreamserver-camelcase-functions
+trigger: "When defining a new function."
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: FlexNetOS/DreamServer
+---
+
+# Dreamserver Camelcase Functions
+
+## Action
+
+Name the function using camelCase.
+
+## Evidence
+
+- Pattern in namingConventions.functions: camelCase
+
+---
+id: dreamserver-pascalcase-classes
+trigger: "When defining a new class."
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: FlexNetOS/DreamServer
+---
+
+# Dreamserver Pascalcase Classes
+
+## Action
+
+Name the class using PascalCase.
+
+## Evidence
+
+- Pattern in namingConventions.classes: PascalCase
+
+---
+id: dreamserver-screaming-snake-constants
+trigger: "When defining a constant."
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: FlexNetOS/DreamServer
+---
+
+# Dreamserver Screaming Snake Constants
+
+## Action
+
+Use SCREAMING_SNAKE_CASE for constant names.
+
+## Evidence
+
+- Pattern in namingConventions.constants: SCREAMING_SNAKE_CASE
+
+---
+id: dreamserver-relative-imports
+trigger: "When importing modules within the repository."
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: FlexNetOS/DreamServer
+---
+
+# Dreamserver Relative Imports
+
+## Action
+
+Use relative imports.
+
+## Evidence
+
+- Pattern in importStyle: relative
+
+---
+id: dreamserver-named-exports
+trigger: "When exporting functions or classes from a module."
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: FlexNetOS/DreamServer
+---
+
+# Dreamserver Named Exports
+
+## Action
+
+Use named exports.
+
+## Evidence
+
+- Pattern in exportStyle: named
+
+---
+id: dreamserver-unit-test-pattern
+trigger: "When writing tests for dashboard API endpoints or helpers."
+confidence: 0.9
+domain: testing
+source: repo-analysis
+source_repo: FlexNetOS/DreamServer
+---
+
+# Dreamserver Unit Test Pattern
+
+## Action
+
+Create or update test_*.py files in dashboard-api/tests and focus on unit tests.
+
+## Evidence
+
+- Pattern in testing.filePattern: *.test.ts
+- Workflow: add-or-improve-tests-for-dashboard-api
+
+---
+id: dreamserver-test-after-feature
+trigger: "When implementing or modifying a feature in dashboard API."
+confidence: 0.9
+domain: testing
+source: repo-analysis
+source_repo: FlexNetOS/DreamServer
+---
+
+# Dreamserver Test After Feature
+
+## Action
+
+Add or update corresponding tests for the new or changed feature.
+
+## Evidence
+
+- Workflow: add-or-fix-dashboard-api-endpoint
+- Workflow: add-or-improve-tests-for-dashboard-api
+
+---
+id: dreamserver-commit-prefix-convention
+trigger: "When writing a commit message."
+confidence: 0.9
+domain: git
+source: repo-analysis
+source_repo: FlexNetOS/DreamServer
+---
+
+# Dreamserver Commit Prefix Convention
+
+## Action
+
+Prefix the commit message with a type such as fix, feat, build, or test.
+
+## Evidence
+
+- Pattern in commits.prefixes
+- Seen in commit: fix(extensions-library): add default values to manifest env_vars
+
+---
+id: dreamserver-commit-average-length
+trigger: "When composing a commit message."
+confidence: 0.7
+domain: git
+source: repo-analysis
+source_repo: FlexNetOS/DreamServer
+---
+
+# Dreamserver Commit Average Length
+
+## Action
+
+Keep the commit message concise, around 65 characters on average.
+
+## Evidence
+
+- Pattern in commits.averageLength: 65
+
+---
+id: dreamserver-update-extension-manifest-defaults
+trigger: "When adding new extensions, changing environment variable defaults, or improving manifest consistency."
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: FlexNetOS/DreamServer
+---
+
+# Dreamserver Update Extension Manifest Defaults
+
+## Action
+
+Edit one or more manifest.yaml files under resources/dev/extensions-library/services/*/ or dream-server/extensions/services/*/ to set or update default values for env_vars or gpu_backends fields.
+
+## Evidence
+
+- Workflow: update-extension-manifest-defaults
+- Files: resources/dev/extensions-library/services/*/manifest.yaml
+
+---
+id: dreamserver-add-or-fix-dashboard-api-endpoint
+trigger: "When implementing new dashboard features or fixing backend bugs."
+confidence: 0.95
+domain: workflow
+source: repo-analysis
+source_repo: FlexNetOS/DreamServer
+---
+
+# Dreamserver Add Or Fix Dashboard Api Endpoint
+
+## Action
+
+Edit or add routers/*.py in dashboard-api to implement/fix endpoint, update or add corresponding tests in tests/*.py, and edit dashboard/src/pages/*.jsx to update UI as needed.
+
+## Evidence
+
+- Workflow: add-or-fix-dashboard-api-endpoint
+- Files: dream-server/extensions/services/dashboard-api/routers/*.py
+
+---
+id: dreamserver-add-or-update-cli-command
+trigger: "When introducing new CLI features or improving operational workflows."
+confidence: 0.85
+domain: workflow
+source: repo-analysis
+source_repo: FlexNetOS/DreamServer
+---
+
+# Dreamserver Add Or Update Cli Command
+
+## Action
+
+Edit dream-server/dream-cli to add or modify command logic and optionally update related scripts or documentation.
+
+## Evidence
+
+- Workflow: add-or-update-cli-command
+- Files: dream-server/dream-cli
+
+---
+id: dreamserver-add-or-improve-dashboard-api-tests
+trigger: "When new endpoints are added or existing ones are modified, or when increasing test coverage."
+confidence: 0.95
+domain: workflow
+source: repo-analysis
+source_repo: FlexNetOS/DreamServer
+---
+
+# Dreamserver Add Or Improve Dashboard Api Tests
+
+## Action
+
+Create or update test_*.py files in dashboard-api/tests and add tests for new endpoints, helpers, or edge cases.
+
+## Evidence
+
+- Workflow: add-or-improve-tests-for-dashboard-api
+- Files: dream-server/extensions/services/dashboard-api/tests/*.py
+
+---
+id: dreamserver-fix-or-enhance-extension-compose-config
+trigger: "When an extension's container setup needs adjustment for reliability, security, or compatibility."
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: FlexNetOS/DreamServer
+---
+
+# Dreamserver Fix Or Enhance Extension Compose Config
+
+## Action
+
+Edit compose.yaml in the relevant extension's directory, optionally update related entrypoint scripts or config files, and test container startup and runtime behavior.
+
+## Evidence
+
+- Workflow: fix-or-enhance-extension-compose-config
+- Files: dream-server/extensions/services/*/compose.yaml
+
+---
+id: dreamserver-update-github-actions-dependency-version
+trigger: "When a new version of a GitHub Action is released or flagged by Dependabot."
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: FlexNetOS/DreamServer
+---
+
+# Dreamserver Update Github Actions Dependency Version
+
+## Action
+
+Edit one or more .github/workflows/*.yml files to update the action version and commit with build(deps): bump ... message.
+
+## Evidence
+
+- Workflow: update-github-actions-dependency-version
+- Files: .github/workflows/*.yml
+
+---
+id: dreamserver-platform-compatibility-script-fix
+trigger: "When a script fails or behaves inconsistently on a non-Linux platform."
+confidence: 0.85
+domain: workflow
+source: repo-analysis
+source_repo: FlexNetOS/DreamServer
+---
+
+# Dreamserver Platform Compatibility Script Fix
+
+## Action
+
+Edit relevant shell scripts to replace incompatible commands or add platform-specific logic and test on affected platforms.
+
+## Evidence
+
+- Workflow: platform-compatibility-script-fix
+- Files: dream-server/scripts/*.sh
+
