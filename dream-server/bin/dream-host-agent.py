@@ -3386,40 +3386,7 @@ class AgentHandler(BaseHTTPRequestHandler):
             # Regenerate LiteLLM lemonade config so it routes to the new model.
             # Only written on AMD installs where lemonade.yaml exists.
             if lemonade_yaml.exists():
-                # Read from .env (already loaded as env_pre above). The host-agent
-                # systemd unit does not source .env as an EnvironmentFile, so
-                # os.environ is unreliable for installer-written values like the
-                # rotated LITELLM_LEMONADE_API_KEY — falling back to the legacy
-                # static "sk-lemonade" would silently revert key rotation.
-                lemonade_api_key = env_pre.get("LITELLM_LEMONADE_API_KEY", "sk-lemonade")
-                lemonade_yaml.write_text(
-                    f"model_list:\n"
-                    f"  - model_name: default\n"
-                    f"    litellm_params:\n"
-                    f"      model: openai/extra.{gguf_file}\n"
-                    f"      api_base: http://llama-server:8080/api/v1\n"
-                    f"      api_key: {lemonade_api_key}\n"
-                    f"      extra_body:\n"
-                    f"        chat_template_kwargs:\n"
-                    f"          enable_thinking: false\n"
-                    f"\n"
-                    f"  - model_name: \"*\"\n"
-                    f"    litellm_params:\n"
-                    f"      model: openai/extra.{gguf_file}\n"
-                    f"      api_base: http://llama-server:8080/api/v1\n"
-                    f"      api_key: {lemonade_api_key}\n"
-                    f"      extra_body:\n"
-                    f"        chat_template_kwargs:\n"
-                    f"          enable_thinking: false\n"
-                    f"\n"
-                    f"litellm_settings:\n"
-                    f"  drop_params: true\n"
-                    f"  set_verbose: false\n"
-                    f"  request_timeout: 120\n"
-                    f"  stream_timeout: 60\n",
-                    encoding="utf-8",
-                )
-                logger.info("Regenerated lemonade.yaml for model: extra.%s", gguf_file)
+                _write_lemonade_config(INSTALL_DIR, gguf_file)
 
             hermes_model_name = f"extra.{gguf_file}" if gpu_backend == "amd" else gguf_file
             try:
@@ -3721,6 +3688,50 @@ def _send_lemonade_warmup(host: str, port: str, gguf_file: str, attempt: int) ->
     return False
 
 
+def _render_runtime_config(
+    install_dir: Path,
+    surface: str,
+    *,
+    gguf_file: str,
+    lemonade_api_key: str,
+    dream_mode: str,
+    gpu_backend: str,
+) -> bool:
+    renderer = install_dir / "scripts" / "render-runtime-configs.py"
+    if not renderer.exists():
+        return False
+    cmd = [
+        sys.executable,
+        str(renderer),
+        "--surface",
+        surface,
+        "--dream-mode",
+        dream_mode,
+        "--gpu-backend",
+        gpu_backend,
+        "--gguf-file",
+        gguf_file,
+        "--litellm-key",
+        lemonade_api_key,
+        "--output-root",
+        str(install_dir),
+        "--write",
+    ]
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        logger.warning("Runtime config renderer failed for %s: %s", surface, exc)
+        return False
+    if result.returncode != 0:
+        logger.warning(
+            "Runtime config renderer failed for %s: %s",
+            surface,
+            (result.stderr or result.stdout).strip(),
+        )
+        return False
+    return True
+
+
 def _write_lemonade_config(install_dir: Path, gguf_file: str):
     """Regenerate lemonade.yaml with the correct model ID for LiteLLM.
 
@@ -3733,7 +3744,21 @@ def _write_lemonade_config(install_dir: Path, gguf_file: str):
     # unit does not source .env as an EnvironmentFile, so os.environ is
     # unreliable for installer-written values; falling back to the legacy
     # static "sk-lemonade" would silently revert key rotation.
-    lemonade_api_key = load_env(install_dir / ".env").get("LITELLM_LEMONADE_API_KEY", "sk-lemonade")
+    env = load_env(install_dir / ".env")
+    lemonade_api_key = env.get("LITELLM_LEMONADE_API_KEY", "sk-lemonade")
+    dream_mode = env.get("DREAM_MODE", "lemonade")
+    gpu_backend = env.get("GPU_BACKEND", "amd")
+    if _render_runtime_config(
+        install_dir,
+        "litellm-lemonade",
+        gguf_file=gguf_file,
+        lemonade_api_key=lemonade_api_key,
+        dream_mode=dream_mode,
+        gpu_backend=gpu_backend,
+    ):
+        logger.info("Wrote lemonade.yaml via runtime renderer for model: extra.%s", gguf_file)
+        return
+
     content = (
         "model_list:\n"
         "  - model_name: \"*\"\n"

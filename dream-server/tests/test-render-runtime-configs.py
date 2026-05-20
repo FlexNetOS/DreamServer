@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 
@@ -95,12 +96,44 @@ def test_perplexica_default_model_matches_route() -> None:
     assert content["modelProviders"]["openai"]["chatModels"][0]["name"] == "extra.Research.gguf"
 
 
+def test_write_mode_writes_under_output_root() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--surface",
+                "litellm-lemonade",
+                "--dream-mode",
+                "lemonade",
+                "--gpu-backend",
+                "amd",
+                "--gguf-file",
+                "Written.gguf",
+                "--output-root",
+                tmp,
+                "--write",
+            ],
+            cwd=ROOT,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=True,
+        )
+        payload = json.loads(proc.stdout)
+        target = Path(tmp) / "config" / "litellm" / "lemonade.yaml"
+        assert payload["mode"] == "write"
+        assert target.exists()
+        assert "openai/extra.Written.gguf" in target.read_text(encoding="utf-8")
+
+
 def main() -> int:
     tests = [
         test_all_surfaces_render,
         test_lemonade_disables_thinking_and_uses_extra_alias,
         test_hermes_uses_lemonade_model_id_for_amd,
         test_perplexica_default_model_matches_route,
+        test_write_mode_writes_under_output_root,
     ]
     for test in tests:
         test()

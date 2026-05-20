@@ -183,6 +183,8 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--opencode-port", type=int, default=3003)
     parser.add_argument("--context-length", type=int, default=DEFAULT_CONTEXT)
     parser.add_argument("--format", choices=["json", "paths"], default="json")
+    parser.add_argument("--output-root", default=".", help="Root directory used with --write")
+    parser.add_argument("--write", action="store_true", help="Write rendered files under --output-root")
     return parser.parse_args(argv)
 
 
@@ -204,11 +206,20 @@ def render(args: argparse.Namespace) -> dict[str, object]:
         context_length=args.context_length,
     )
     files = [RENDERERS[name](inputs) for name in select_surfaces(args.surface)]
+    written: list[str] = []
+    if args.write:
+        output_root = Path(args.output_root)
+        for item in files:
+            target = output_root / item.path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(ensure_trailing_newline(item.content), encoding="utf-8")
+            written.append(str(target))
     return {
         "version": "1",
-        "mode": "dry-run",
+        "mode": "write" if args.write else "dry-run",
         "inputs": asdict(inputs),
         "files": [asdict(RenderedFile(item.surface, item.path, ensure_trailing_newline(item.content))) for item in files],
+        "written": written,
     }
 
 

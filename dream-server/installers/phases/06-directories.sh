@@ -659,7 +659,31 @@ ENV_EOF
         # lemonade config regardless of which model the install resolves to.
         # bootstrap-upgrade.sh mirrors this when it regenerates the file
         # after a hot-swap.
-        cat > "$INSTALL_DIR/config/litellm/lemonade.yaml" << LITELLM_EOF
+        _renderer_ok=false
+        _renderer_py="${DREAM_PYTHON_CMD:-}"
+        if [[ -z "$_renderer_py" && -f "$SCRIPT_DIR/lib/python-cmd.sh" ]]; then
+            . "$SCRIPT_DIR/lib/python-cmd.sh"
+            _renderer_py="$(ds_detect_python_cmd 2>/dev/null || true)"
+        fi
+        if [[ -z "$_renderer_py" ]]; then
+            _renderer_py="python3"
+        fi
+        if [[ -f "$SCRIPT_DIR/scripts/render-runtime-configs.py" ]] && command -v "$_renderer_py" >/dev/null 2>&1; then
+            if "$_renderer_py" "$SCRIPT_DIR/scripts/render-runtime-configs.py" \
+                --surface litellm-lemonade \
+                --dream-mode lemonade \
+                --gpu-backend amd \
+                --gguf-file "$_active_gguf" \
+                --litellm-key "$LITELLM_LEMONADE_API_KEY" \
+                --output-root "$INSTALL_DIR" \
+                --write >> "$LOG_FILE" 2>&1; then
+                _renderer_ok=true
+            else
+                warn "Runtime config renderer failed for Lemonade; falling back to inline writer"
+            fi
+        fi
+        if [[ "$_renderer_ok" != "true" ]]; then
+            cat > "$INSTALL_DIR/config/litellm/lemonade.yaml" << LITELLM_EOF
 model_list:
   - model_name: default
     litellm_params:
@@ -685,7 +709,9 @@ litellm_settings:
   request_timeout: 120
   stream_timeout: 60
 LITELLM_EOF
+        fi
         ai_ok "Generated LiteLLM config for Lemonade (model: extra.${_active_gguf})"
+        unset _renderer_ok _renderer_py
     fi
 
     # Validate generated .env against schema (fails fast on missing/unknown keys).

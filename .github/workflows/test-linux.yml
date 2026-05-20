@@ -93,6 +93,9 @@ jobs:
       - name: Runtime Config Renderer Tests
         run: python3 tests/test-render-runtime-configs.py
 
+      - name: Runtime Config Wiring Tests
+        run: python3 tests/test-runtime-config-wiring.py
+
       - name: CPU-Only Path Tests
         run: bash tests/test-cpu-only-path.sh
 

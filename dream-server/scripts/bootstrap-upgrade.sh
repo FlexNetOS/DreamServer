@@ -537,7 +537,32 @@ if [[ -n "$DOCKER_CMD" ]] && $DOCKER_CMD ps --filter name=dream-llama-server --f
             # went from "hangs indefinitely" to 1.8s end-to-end with this
             # one block added. The kwarg is a Qwen3-specific switch and is
             # safely ignored by non-Qwen3 chat templates.
-            cat > "$INSTALL_DIR/config/litellm/lemonade.yaml" << LITELLM_UPGRADE_EOF
+            _renderer_ok=false
+            _renderer_script="$INSTALL_DIR/scripts/render-runtime-configs.py"
+            _renderer_py="${DREAM_PYTHON_CMD:-}"
+            if [[ -z "$_renderer_py" && -f "$INSTALL_DIR/lib/python-cmd.sh" ]]; then
+                . "$INSTALL_DIR/lib/python-cmd.sh"
+                _renderer_py="$(ds_detect_python_cmd 2>/dev/null || true)"
+            fi
+            if [[ -z "$_renderer_py" ]]; then
+                _renderer_py="python3"
+            fi
+            if [[ -f "$_renderer_script" ]] && command -v "$_renderer_py" >/dev/null 2>&1; then
+                if "$_renderer_py" "$_renderer_script" \
+                    --surface litellm-lemonade \
+                    --dream-mode lemonade \
+                    --gpu-backend amd \
+                    --gguf-file "$FULL_GGUF_FILE" \
+                    --litellm-key "$LITELLM_LEMONADE_API_KEY" \
+                    --output-root "$INSTALL_DIR" \
+                    --write >/dev/null 2>&1; then
+                    _renderer_ok=true
+                else
+                    log "WARNING: Runtime config renderer failed for LiteLLM; falling back to inline writer"
+                fi
+            fi
+            if [[ "$_renderer_ok" != "true" ]]; then
+                cat > "$INSTALL_DIR/config/litellm/lemonade.yaml" << LITELLM_UPGRADE_EOF
 model_list:
   - model_name: default
     litellm_params:
@@ -563,6 +588,8 @@ litellm_settings:
   request_timeout: 120
   stream_timeout: 60
 LITELLM_UPGRADE_EOF
+            fi
+            unset _renderer_ok _renderer_script _renderer_py
             log "Restarting LiteLLM to pick up model change..."
             $DOCKER_CMD restart dream-litellm 2>&1 || log "WARNING: LiteLLM restart failed (non-fatal)"
         fi
